@@ -1,2 +1,2 @@
 # Satyam-shrestha
-These is my pot folio
+These is my portfolio
