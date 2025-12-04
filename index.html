@@ -1,208 +1,444 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Satyam Shrestha // Cybernetic Portfolio</title>
-    <!-- Load Tailwind CSS -->
+    <title>Satyam Shrestha | Computer Science Portfolio</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Inter font for clean readability -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        nature: {
+                            dark: '#0f172a', // Slate 900
+                            mid: '#1e293b',  // Slate 800
+                            accent: '#10b981', // Emerald 500
+                            light: '#f1f5f9', // Slate 100
+                            mist: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 1s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        /* Define theme colors and font */
-        :root {
-            --neon-blue: #06b6d4; /* cyan-500 */
-            --dark-bg: #030712; /* a near-black dark blue */
-        }
-        
-        /* Apply IBM Plex Mono to code/highlighted areas */
-        .font-code {
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        /* Glitch text effect mimic for the name */
-        .glitch-text {
-            color: var(--neon-blue);
-            text-shadow: 0 0 5px rgba(6, 182, 212, 0.7), 0 0 15px rgba(6, 182, 212, 0.5);
-            animation: flicker 4s infinite alternate;
-        }
-
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            4% { opacity: 0.95; }
-            6% { opacity: 1; }
-            10% { opacity: 0.8; }
-            12% { opacity: 1; }
-            20% { opacity: 0.9; }
-            25% { opacity: 1; }
-        }
-
-        /* Glowing card effect */
-        .glow-card {
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-        }
-        .glow-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 0 25px rgba(6, 182, 212, 0.6);
-            border: 1px solid var(--neon-blue);
-        }
-
-        /* Background grid/dots pattern for the futuristic feel */
-        .futuristic-bg {
-            background-color: var(--dark-bg);
-            background-image: radial-gradient(var(--neon-blue) 0.5px, transparent 0.5px), radial-gradient(var(--neon-blue) 0.5px, transparent 0.5px);
-            background-size: 40px 40px;
-            background-position: 0 0, 20px 20px;
-        }
-        
-        /* Scrollbar styling for a cleaner look */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
-
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
         ::-webkit-scrollbar-thumb {
-            background-color: var(--neon-blue);
+            background: #334155;
             border-radius: 4px;
         }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10b981;
+        }
 
-        ::-webkit-scrollbar-track {
-            background-color: var(--dark-bg);
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: #10b981;
+            box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Mountain Divider */
+        .mountain-divider {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+        
+        .mountain-divider svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 150px;
         }
     </style>
 </head>
-<body class="futuristic-bg text-gray-200 min-h-screen font-inter">
+<body class="bg-nature-dark text-slate-300 antialiased selection:bg-nature-accent selection:text-white">
 
-    <!-- Header / Navigation (Simple Terminal Bar) -->
-    <header class="sticky top-0 z-50 bg-black/70 backdrop-blur-sm shadow-xl shadow-cyan-900/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <!-- Logo/Terminal Prompt -->
-            <a href="#home" class="text-sm md:text-lg font-code font-bold text-cyan-400 hover:text-cyan-200 transition duration-300">
-                <span class="text-lime-400">root@satyam</span>:<span class="text-gray-400">/portfolio</span>$
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="#" class="text-2xl font-serif font-bold text-white tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-mountain text-nature-accent"></i> SATYAM
             </a>
-            <!-- Navigation Links -->
-            <nav class="space-x-4 text-sm md:text-base">
-                <a href="#projects" class="text-gray-300 hover:text-cyan-400 transition duration-300">Projects</a>
-                <a href="#skills" class="text-gray-300 hover:text-cyan-400 transition duration-300">Skills</a>
-                <a href="#contact" class="text-gray-300 hover:text-cyan-400 transition duration-300">Contact</a>
-            </nav>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="hover:text-nature-accent transition-colors text-sm uppercase tracking-widest font-semibold">Home</a>
+                <a href="#about" class="hover:text-nature-accent transition-colors text-sm uppercase tracking-widest font-semibold">About</a>
+                <a href="#skills" class="hover:text-nature-accent transition-colors text-sm uppercase tracking-widest font-semibold">Skills</a>
+                <a href="#projects" class="hover:text-nature-accent transition-colors text-sm uppercase tracking-widest font-semibold">Projects</a>
+                <a href="#contact" class="px-4 py-2 border border-nature-accent text-nature-accent rounded hover:bg-nature-accent hover:text-white transition-all text-sm uppercase tracking-widest font-semibold">Contact</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
         </div>
-    </header>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full glass border-t border-slate-700">
+            <div class="flex flex-col p-4 space-y-4">
+                <a href="#home" class="hover:text-nature-accent">Home</a>
+                <a href="#about" class="hover:text-nature-accent">About</a>
+                <a href="#skills" class="hover:text-nature-accent">Skills</a>
+                <a href="#projects" class="hover:text-nature-accent">Projects</a>
+                <a href="#contact" class="text-nature-accent">Contact</a>
+            </div>
+        </div>
+    </nav>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop" alt="Nepal Mountains" class="w-full h-full object-cover opacity-60">
+            <div class="absolute inset-0 bg-gradient-to-b from-nature-dark/80 via-nature-dark/50 to-nature-dark"></div>
+        </div>
 
-        <!-- 1. Hero Section (Home) -->
-        <section id="home" class="py-24 md:py-32 text-center">
-            <h1 class="text-5xl md:text-8xl font-extrabold mb-4 font-code">
-                <span class="glitch-text">SATYAM SHRESTHA</span>
+        <div class="container mx-auto px-6 relative z-10 text-center pt-20">
+            <div class="inline-block mb-4 px-3 py-1 border border-nature-accent/50 rounded-full bg-nature-accent/10 backdrop-blur-sm animate-fade-in-up">
+                <span class="text-nature-accent text-sm font-bold tracking-widest uppercase">Based in Lalitpur, Nepal</span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-serif font-bold text-white mb-6 animate-fade-in-up" style="animation-delay: 0.1s;">
+                Satyam Shrestha
             </h1>
-            <p class="text-xl md:text-3xl text-gray-400 mb-8 font-code tracking-widest">
-                <span class="text-lime-400">//</span> BSc (Hons) Computer Science Student
+            <p class="text-xl md:text-2xl text-slate-300 mb-8 max-w-2xl mx-auto animate-fade-in-up" style="animation-delay: 0.2s;">
+                Computer Science Student & Developer inspired by the heights of code and nature.
             </p>
-            <p class="max-w-3xl mx-auto text-lg text-gray-400">
-                <span class="text-cyan-400">[ INIT: ]</span> Focused on full-stack development, data structures, and creating robust, scalable systems. Exploring the intersection of AI and human-computer interaction.
-            </p>
-            <a href="#projects" class="mt-12 inline-block px-8 py-3 bg-cyan-600/80 text-white font-semibold rounded-full glow-card shadow-lg shadow-cyan-500/30">
-                View Repository
+            <div class="flex flex-col md:flex-row justify-center gap-4 animate-fade-in-up" style="animation-delay: 0.3s;">
+                <a href="#projects" class="px-8 py-3 bg-nature-accent text-white rounded font-bold hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-900/50">
+                    View My Work
+                </a>
+                <a href="#contact" class="px-8 py-3 border border-white text-white rounded font-bold hover:bg-white hover:text-nature-dark transition-colors">
+                    Get in Touch
+                </a>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <a href="#about" class="text-white opacity-70 hover:opacity-100">
+                <i class="fa-solid fa-chevron-down text-2xl"></i>
             </a>
-        </section>
+        </div>
+        
+        <!-- Mountain Divider Bottom -->
+        <div class="mountain-divider">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="fill-nature-dark"></path>
+            </svg>
+        </div>
+    </section>
 
-        <!-- 2. Projects Section -->
-        <section id="projects" class="pt-20 pb-16 border-t border-cyan-800/50">
-            <h2 class="text-4xl font-bold mb-12 text-center text-white">
-                <span class="pb-1 border-b-4 border-cyan-500/80 font-code">PROJECTS // DataStream</span>
-            </h2>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Project 1 -->
-                <div class="bg-gray-800/50 p-6 rounded-xl glow-card">
-                    <h3 class="text-2xl font-semibold text-cyan-400 mb-2 font-code">NeuralNet Simulator</h3>
-                    <p class="text-sm text-lime-400 mb-4">Stack: Python, TensorFlow, Flask</p>
-                    <p class="text-gray-300 mb-4">A web-based tool for visualizing and training small-scale neural networks. Features include real-time loss plotting and layer configuration.</p>
-                    <a href="#" class="text-sm text-cyan-400 hover:underline">Access Live Demo &rarr;</a>
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-nature-dark relative">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <!-- Profile Image with Mountain Frame Effect -->
+                <div class="w-full md:w-1/3 relative group">
+                    <div class="absolute inset-0 bg-nature-accent rounded-2xl transform rotate-6 opacity-20 group-hover:rotate-12 transition-transform duration-500"></div>
+                    <div class="relative overflow-hidden rounded-2xl shadow-2xl border border-slate-700">
+                        <!-- Automatic Github Profile Image Fetch -->
+                        <img src="https://github.com/Satyam-shrestha9846.png" alt="Satyam Shrestha" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-500">
+                    </div>
                 </div>
 
-                <!-- Project 2 -->
-                <div class="bg-gray-800/50 p-6 rounded-xl glow-card">
-                    <h3 class="text-2xl font-semibold text-cyan-400 mb-2 font-code">Quantum Scheduler API</h3>
-                    <p class="text-sm text-lime-400 mb-4">Stack: Node.js, MongoDB, TypeScript</p>
-                    <p class="text-gray-300 mb-4">A high-throughput REST API designed for managing complex, non-linear scheduling tasks using efficient graph traversal algorithms.</p>
-                    <a href="#" class="text-sm text-cyan-400 hover:underline">View Source Code &rarr;</a>
+                <div class="w-full md:w-2/3">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-6 flex items-center gap-3">
+                        <span class="w-12 h-1 bg-nature-accent inline-block rounded"></span>
+                        About Me
+                    </h2>
+                    <p class="text-lg text-slate-400 mb-6 leading-relaxed">
+                        Namaste! I'm <span class="text-nature-accent font-bold">Satyam Shrestha</span>, a Computer Science student based in the historic city of <span class="text-white">Lalitpur, Nepal</span>. 
+                    </p>
+                    <p class="text-lg text-slate-400 mb-6 leading-relaxed">
+                        Just as mountaineering requires preparation, patience, and precision, I approach software development with a focus on clean architecture and efficient problem-solving. Whether I'm coding a new application or exploring the trails of the Kathmandu Valley, I am always seeking new heights.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-6 mt-8">
+                        <div class="glass-card p-4 rounded-lg">
+                            <i class="fa-solid fa-graduation-cap text-nature-accent text-2xl mb-2"></i>
+                            <h3 class="text-white font-bold">Education</h3>
+                            <p class="text-sm text-slate-400">Computer Science</p>
+                        </div>
+                        <div class="glass-card p-4 rounded-lg">
+                            <i class="fa-solid fa-location-dot text-nature-accent text-2xl mb-2"></i>
+                            <h3 class="text-white font-bold">Location</h3>
+                            <p class="text-sm text-slate-400">Lalitpur, Nepal</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-slate-900 relative overflow-hidden">
+        <!-- Decorative bg elements -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-nature-accent/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">Technical Landscape</h2>
+                <p class="text-slate-400">The tools and technologies I use to build digital experiences.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Frontend -->
+                <div class="glass-card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-slate-700 pb-2">
+                        <i class="fa-solid fa-code text-nature-accent mr-2"></i> Frontend
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">HTML5</span>
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">CSS3</span>
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">JavaScript</span>
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">React</span>
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">Tailwind</span>
+                    </div>
                 </div>
 
-                <!-- Project 3 -->
-                <div class="bg-gray-800/50 p-6 rounded-xl glow-card">
-                    <h3 class="text-2xl font-semibold text-cyan-400 mb-2 font-code">Decentralized Voting App</h3>
-                    <p class="text-sm text-lime-400 mb-4">Stack: Solidity, React, Web3.js</p>
-                    <p class="text-gray-300 mb-4">An immutable voting platform built on a mock blockchain. Focuses on security, transparency, and distributed consensus mechanisms.</p>
-                    <a href="#" class="text-sm text-cyan-400 hover:underline">Explore Repository &rarr;</a>
+                <!-- Backend -->
+                <div class="glass-card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-slate-700 pb-2">
+                        <i class="fa-solid fa-server text-nature-accent mr-2"></i> Backend
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">Node.js</span>
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">Python</span>
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">SQL</span>
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">Git</span>
+                    </div>
+                </div>
+
+                <!-- Tools -->
+                <div class="glass-card p-6 rounded-xl">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-slate-700 pb-2">
+                        <i class="fa-solid fa-toolbox text-nature-accent mr-2"></i> Tools
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">VS Code</span>
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">GitHub</span>
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">Figma</span>
+                        <span class="px-3 py-1 bg-slate-800 rounded-full text-sm text-nature-accent border border-slate-700">Linux</span>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- 3. Skills Section -->
-        <section id="skills" class="pt-20 pb-16 border-t border-cyan-800/50">
-            <h2 class="text-4xl font-bold mb-12 text-center text-white">
-                <span class="pb-1 border-b-4 border-cyan-500/80 font-code">SKILLS // TechStack</span>
-            </h2>
-            
-            <div class="flex flex-wrap justify-center gap-4">
-                <!-- Core Languages -->
-                <span class="bg-lime-900/30 text-lime-400 px-4 py-2 rounded-lg font-code text-sm glow-card shadow-lg shadow-lime-900/30">Python (DSA, ML)</span>
-                <span class="bg-lime-900/30 text-lime-400 px-4 py-2 rounded-lg font-code text-sm glow-card shadow-lg shadow-lime-900/30">Java</span>
-                <span class="bg-lime-900/30 text-lime-400 px-4 py-2 rounded-lg font-code text-sm glow-card shadow-lg shadow-lime-900/30">JavaScript / TypeScript</span>
-                
-                <!-- Frameworks -->
-                <span class="bg-cyan-900/30 text-cyan-400 px-4 py-2 rounded-lg font-code text-sm glow-card shadow-lg shadow-cyan-900/30">React.js</span>
-                <span class="bg-cyan-900/30 text-cyan-400 px-4 py-2 rounded-lg font-code text-sm glow-card shadow-lg shadow-cyan-900/30">Node.js / Express</span>
-                <span class="bg-cyan-900/30 text-cyan-400 px-4 py-2 rounded-lg font-code text-sm glow-card shadow-lg shadow-cyan-900/30">Tailwind CSS</span>
-
-                <!-- Databases & Tools -->
-                <span class="bg-fuchsia-900/30 text-fuchsia-400 px-4 py-2 rounded-lg font-code text-sm glow-card shadow-lg shadow-fuchsia-900/30">PostgreSQL</span>
-                <span class="bg-fuchsia-900/30 text-fuchsia-400 px-4 py-2 rounded-lg font-code text-sm glow-card shadow-lg shadow-fuchsia-900/30">MongoDB</span>
-                <span class="bg-fuchsia-900/30 text-fuchsia-400 px-4 py-2 rounded-lg font-code text-sm glow-card shadow-lg shadow-fuchsia-900/30">Git / GitHub</span>
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-nature-dark relative">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">Expeditions</h2>
+                <p class="text-slate-400">Recent projects fetched dynamically from GitHub.</p>
             </div>
-        </section>
 
-        <!-- 4. Contact Section -->
-        <section id="contact" class="pt-20 pb-16 border-t border-cyan-800/50">
-            <h2 class="text-4xl font-bold mb-12 text-center text-white">
-                <span class="pb-1 border-b-4 border-cyan-500/80 font-code">CONNECT // Endpoint</span>
-            </h2>
-            
-            <div class="max-w-lg mx-auto bg-gray-800/50 p-8 rounded-xl glow-card shadow-xl shadow-cyan-900/20">
-                <form class="space-y-6">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-400 font-code">Name</label>
-                        <input type="text" id="name" name="name" class="mt-1 block w-full bg-gray-900 border border-cyan-700/50 text-white rounded-md p-3 focus:ring-cyan-500 focus:border-cyan-500 font-code">
-                    </div>
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-400 font-code">Email</label>
-                        <input type="email" id="email" name="email" class="mt-1 block w-full bg-gray-900 border border-cyan-700/50 text-white rounded-md p-3 focus:ring-cyan-500 focus:border-cyan-500 font-code">
-                    </div>
-                    <div>
-                        <label for="message" class="block text-sm font-medium text-gray-400 font-code">Message</label>
-                        <textarea id="message" name="message" rows="4" class="mt-1 block w-full bg-gray-900 border border-cyan-700/50 text-white rounded-md p-3 focus:ring-cyan-500 focus:border-cyan-500 font-code"></textarea>
-                    </div>
-                    <button type="submit" class="w-full px-4 py-3 bg-lime-600/80 text-black font-bold rounded-md hover:bg-lime-500/80 transition duration-300 glow-card shadow-lg shadow-lime-500/30">
-                        TRANSMIT [SEND]
-                    </button>
-                </form>
+            <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Loading State -->
+                <div class="col-span-full text-center py-10">
+                    <i class="fa-solid fa-circle-notch fa-spin text-4xl text-nature-accent"></i>
+                    <p class="mt-4 text-slate-400">Loading projects from basecamp...</p>
+                </div>
             </div>
-        </section>
-    </main>
+            
+            <div class="text-center mt-12">
+                <a href="https://github.com/Satyam-shrestha9846" target="_blank" class="inline-flex items-center gap-2 text-nature-accent hover:text-white transition-colors border-b border-transparent hover:border-white pb-1">
+                    View all repositories on GitHub <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 relative bg-slate-900">
+        <!-- Background image overlay -->
+        <div class="absolute inset-0 z-0">
+             <img src="https://images.unsplash.com/photo-1519681393798-38e43269d877?q=80&w=2070&auto=format&fit=crop" alt="Night Sky" class="w-full h-full object-cover opacity-20">
+             <div class="absolute inset-0 bg-gradient-to-t from-nature-dark to-transparent"></div>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl mx-auto glass rounded-2xl p-8 md:p-12">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">Start a New Journey</h2>
+                    <p class="text-slate-300">Have a project in mind or just want to say Namaste? Feel free to reach out.</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-8 justify-center items-center">
+                    <!-- Social Links -->
+                    <div class="grid grid-cols-2 gap-4 w-full md:w-auto">
+                        <a href="https://github.com/Satyam-shrestha9846" target="_blank" class="flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-nature-accent rounded-lg transition-colors group">
+                            <i class="fa-brands fa-github text-2xl text-white"></i>
+                            <span class="text-slate-300 group-hover:text-white font-medium">GitHub</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-blue-600 rounded-lg transition-colors group">
+                            <i class="fa-brands fa-linkedin text-2xl text-white"></i>
+                            <span class="text-slate-300 group-hover:text-white font-medium">LinkedIn</span>
+                        </a>
+                        <a href="mailto:contact@example.com" class="flex items-center gap-3 p-4 bg-slate-800/50 hover:bg-red-500 rounded-lg transition-colors group col-span-2 md:col-span-1">
+                            <i class="fa-solid fa-envelope text-2xl text-white"></i>
+                            <span class="text-slate-300 group-hover:text-white font-medium">Email</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="mt-16 py-6 border-t border-cyan-800/50 text-center text-gray-500">
-        <p class="text-sm font-code">&copy; 2025 // Satyam Shrestha // System Status: <span class="text-lime-400">ONLINE</span></p>
+    <footer class="bg-nature-dark py-8 border-t border-slate-800">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-500 mb-2">
+                &copy; <span id="year"></span> Satyam Shrestha. Built with <i class="fa-solid fa-heart text-nature-accent"></i> in Lalitpur.
+            </p>
+        </div>
     </footer>
-    
+
+    <!-- Scripts -->
     <script>
-        // Simple smooth scrolling for navigation links
+        // Set Current Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass', 'shadow-lg');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('py-2');
+            } else {
+                navbar.classList.remove('glass', 'shadow-lg', 'py-2');
+                navbar.classList.add('py-4');
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Fetch GitHub Projects
+        const username = 'Satyam-shrestha9846';
+        const projectsContainer = document.getElementById('projects-container');
+
+        async function fetchProjects() {
+            try {
+                const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`);
+                if (!response.ok) throw new Error('GitHub API Limit or Error');
+                
+                const repos = await response.json();
+                
+                // Clear loading spinner
+                projectsContainer.innerHTML = '';
+
+                repos.forEach(repo => {
+                    // Skip forked repos if you want original work only, remove if not
+                    // if (repo.fork) return; 
+
+                    const card = document.createElement('div');
+                    card.className = 'glass-card p-6 rounded-xl flex flex-col h-full';
+                    
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                            <i class="fa-regular fa-folder-open text-nature-accent text-3xl"></i>
+                            <a href="${repo.html_url}" target="_blank" class="text-slate-400 hover:text-white transition-colors">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2 truncate">${repo.name}</h3>
+                        <p class="text-slate-400 text-sm mb-4 flex-grow line-clamp-3">
+                            ${repo.description || 'No description available for this project.'}
+                        </p>
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="text-xs text-nature-accent font-mono">
+                                ${repo.language || 'Code'}
+                            </span>
+                            <div class="flex gap-3 text-slate-500 text-xs">
+                                <span><i class="fa-regular fa-star"></i> ${repo.stargazers_count}</span>
+                                <span><i class="fa-solid fa-code-branch"></i> ${repo.forks_count}</span>
+                            </div>
+                        </div>
+                    `;
+                    projectsContainer.appendChild(card);
+                });
+            } catch (error) {
+                console.error(error);
+                projectsContainer.innerHTML = `
+                    <div class="col-span-full text-center p-6 border border-red-500/30 rounded bg-red-500/10">
+                        <p class="text-red-400">Could not load projects securely (API Rate Limit). <br>
+                        <a href="https://github.com/${username}" class="underline hover:text-white">Visit my GitHub directly</a></p>
+                    </div>
+                `;
+            }
+        }
+
+        fetchProjects();
+
+        // Smooth Scroll for Anchors
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
+                mobileMenu.classList.add('hidden'); // Close mobile menu if open
                 document.querySelector(this.getAttribute('href')).scrollIntoView({
                     behavior: 'smooth'
                 });
