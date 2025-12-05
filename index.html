@@ -88,6 +88,11 @@
             border-color: #10b981;
             box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.2);
         }
+        
+        /* Music button specific style to lift it off the corner */
+        #music-toggle:hover {
+            transform: scale(1.1);
+        }
 
         /* Mountain Divider */
         .mountain-divider {
@@ -147,7 +152,7 @@
     <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
         <!-- Background Image with Overlay -->
         <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop" alt="Nepal Mountains" class="w-full h-full object-cover opacity-60">
+            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=2070&auto=format&fit=crop" onerror="this.src='https://placehold.co/2070x1164/0f172a/ffffff?text=Mountain+Placeholder'" alt="Nepal Mountains" class="w-full h-full object-cover opacity-60">
             <div class="absolute inset-0 bg-gradient-to-b from-nature-dark/80 via-nature-dark/50 to-nature-dark"></div>
         </div>
 
@@ -194,8 +199,8 @@
                 <div class="w-full md:w-1/3 relative group">
                     <div class="absolute inset-0 bg-nature-accent rounded-2xl transform rotate-6 opacity-20 group-hover:rotate-12 transition-transform duration-500"></div>
                     <div class="relative overflow-hidden rounded-2xl shadow-2xl border border-slate-700">
-                        <!-- Automatic Github Profile Image Fetch -->
-                        <img src="profile.jpg" alt="Satyam Shrestha" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-500">
+                        <!-- Placeholder Image for Profile -->
+                        <img src="https://placehold.co/400x400/1e293b/ffffff?text=Satyam+Profile" onerror="this.src='https://placehold.co/400x400/1e293b/ffffff?text=Satyam+Profile'" alt="Satyam Shrestha" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-500">
                     </div>
                 </div>
 
@@ -311,7 +316,7 @@
     <section id="contact" class="py-20 relative bg-slate-900">
         <!-- Background image overlay -->
         <div class="absolute inset-0 z-0">
-             <img src="https://images.unsplash.com/photo-1519681393798-38e43269d877?q=80&w=2070&auto=format&fit=crop" alt="Night Sky" class="w-full h-full object-cover opacity-20">
+             <img src="https://images.unsplash.com/photo-1519681393798-38e43269d877?q=80&w=2070&auto=format&fit=crop" onerror="this.src='https://placehold.co/2070x1164/1e293b/ffffff?text=Night+Sky'" alt="Night Sky" class="w-full h-full object-cover opacity-20">
              <div class="absolute inset-0 bg-gradient-to-t from-nature-dark to-transparent"></div>
         </div>
 
@@ -352,6 +357,29 @@
         </div>
     </footer>
 
+    <!-- 
+        FLOATING MUSIC TOGGLE & HIDDEN YOUTUBE IFRAME
+        
+        The audio source has been changed to a YouTube embed using a hidden iframe.
+        The initial mute/unmute is handled by reloading the iframe src with the correct 'mute' parameter.
+    -->
+    <button id="music-toggle" class="fixed bottom-6 right-6 z-50 glass-card p-4 rounded-full shadow-2xl hover:bg-nature-accent transition-all duration-300 focus:outline-none">
+        <i class="fa-solid fa-volume-xmark text-xl text-nature-accent" id="volume-icon"></i>
+    </button>
+    <div id="music-status-box" class="fixed bottom-20 right-6 z-50 p-3 text-sm rounded-lg shadow-xl bg-nature-mid text-slate-300 opacity-0 pointer-events-none transition-opacity duration-500"></div>
+
+    <!-- Hidden YouTube Player for Background Music -->
+    <iframe 
+        id="bg-music-frame" 
+        width="1" height="1" 
+        src="https://www.youtube.com/embed/tAGnKpE4NCI?autoplay=1&mute=0&loop=1&playlist=tAGnKpE4NCI&controls=0&disablekb=1&modestbranding=1" 
+        frameborder="0" 
+        allow="autoplay; encrypted-media" 
+        allowfullscreen
+        class="absolute -left-full top-0 hidden">
+    </iframe>
+
+
     <!-- Scripts -->
     <script>
         // Set Current Year
@@ -383,7 +411,9 @@
 
         async function fetchProjects() {
             try {
-                const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`);
+                // Using exponential backoff for better reliability
+                let response = await fetchWithRetry(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`);
+                
                 if (!response.ok) throw new Error('GitHub API Limit or Error');
                 
                 const repos = await response.json();
@@ -425,14 +455,29 @@
                 console.error(error);
                 projectsContainer.innerHTML = `
                     <div class="col-span-full text-center p-6 border border-red-500/30 rounded bg-red-500/10">
-                        <p class="text-red-400">Could not load projects securely (API Rate Limit). <br>
+                        <p class="text-red-400">Could not load projects securely (API Rate Limit or Network Error). <br>
                         <a href="https://github.com/${username}" class="underline hover:text-white">Visit my GitHub directly</a></p>
                     </div>
                 `;
             }
         }
+        
+        // Helper function for fetching with retry (Exponential Backoff)
+        async function fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.status !== 403) return response; // Return on success or non-rate-limit error
+                    // If 403 (Rate Limit), wait and retry
+                    await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                } catch (error) {
+                    // Ignore transient network errors, wait and retry
+                    await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                }
+            }
+            throw new Error(`Failed to fetch ${url} after ${retries} attempts.`);
+        }
 
-        fetchProjects();
 
         // Smooth Scroll for Anchors
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -444,16 +489,66 @@
                 });
             });
         });
+
+        // --- BACKGROUND MUSIC LOGIC (YouTube Iframe) ---
+        const toggleButton = document.getElementById('music-toggle');
+        const volumeIcon = document.getElementById('volume-icon');
+        const iframePlayer = document.getElementById('bg-music-frame');
+        const statusBox = document.getElementById('music-status-box');
+        
+        // Base URL for the YouTube video without mute parameter
+        // Using the user-provided URL but ensuring mute/unmute can be controlled
+        const youtubeBaseSrc = 'https://www.youtube.com/embed/tAGnKpE4NCI?autoplay=1&loop=1&playlist=tAGnKpE4NCI&controls=0&disablekb=1&modestbranding=1';
+
+        let isMuted = true; // Initial state
+
+        function showStatus(message) {
+            statusBox.textContent = message;
+            statusBox.classList.remove('opacity-0', 'pointer-events-none');
+            // Hide after 3 seconds
+            setTimeout(() => {
+                statusBox.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // Function to update the iframe source to control mute/unmute by forcing a reload
+        function updateIframeSrc(muteState) {
+            // Appends &mute=1 or &mute=0 to the base source
+            iframePlayer.src = `${youtubeBaseSrc}&mute=${muteState ? 1 : 0}`;
+        }
+        
+        // 1. Initial State Setup
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ensure the iframe is set to muted initially
+            updateIframeSrc(true); // Sets src to ...&mute=1
+
+            // 2. Add Toggle Listener
+            toggleButton.addEventListener('click', () => {
+                isMuted = !isMuted;
+
+                if (!isMuted) {
+                    // UNMUTE (User interaction satisfies browser policy)
+                    updateIframeSrc(false); // Sets src to ...&mute=0 (reloads the video unmuted)
+                    
+                    volumeIcon.classList.remove('fa-volume-xmark', 'text-nature-accent', 'fa-volume-off');
+                    volumeIcon.classList.add('fa-volume-high', 'text-white');
+                    toggleButton.classList.add('bg-nature-accent');
+                    showStatus('🔊 Background Music Enabled');
+
+                } else {
+                    // MUTE 
+                    updateIframeSrc(true); // Sets src to ...&mute=1 (reloads the video muted)
+                    
+                    volumeIcon.classList.remove('fa-volume-high', 'text-white');
+                    volumeIcon.classList.add('fa-volume-xmark', 'text-nature-accent');
+                    toggleButton.classList.remove('bg-nature-accent');
+                    showStatus('🔇 Background Music Disabled');
+                }
+            });
+            
+            // Initial call to fetch projects
+            fetchProjects();
+        });
     </script>
-     <div style="position: absolute; width: 1px; height: 1px; left: -9999px; overflow: hidden; opacity: 0; pointer-events: none; z-index: -9999;">
-        <iframe 
-            width="300" 
-            height="200" 
-            src="https://www.youtube.com/embed/tAGnKpE4NCI?autoplay=1&mute=0&loop=1&playlist=tAGnKpE4NCI&controls=0&disablekb=1&modestbranding=1" 
-            frameborder="0" 
-            allow="autoplay; encrypted-media" 
-            allowfullscreen>
-        </iframe>
-    </div>
 </body>
 </html>
